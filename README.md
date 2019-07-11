@@ -1,34 +1,14 @@
-## Login feature with abstract base classes
+## Container classes for profile, image and home
 
-* Login viewmodel will call the validation logic for username, password, progressbar from the validation class
-* validation data class you will have two arguments Field and Resource
-   ```
-     enum class Field{
-	   EMAIL,
-	   PASSWORD
-	   ```
-* Resource class if you have data in application and give status to it you use resource
-* How to use Event that returns content if it is not handled
-* Abstraction between network layer and data layer, separation of concern, usage of repository classes
-* Leveraging material design that makes it easy to display error messages, validation parameters with less code, 
-	
-  ### User Repository
-  
-  * Usually the request and response should be below the repository level in the architecture.
-  * Respository hides the details from caller and handles the business logic
-  * ```
-      fun doUserLogin(email: String, password: String): Single<User> =
-        networkService.doLoginCall(LoginRequest(email, password))
-            .map {
-                User(
-                    it.userId,
-                    it.userName,
-                    it.userEmail,
-                    it.accessToken,
-                    it.profilePicUrl
-                )
-            }
-			
-			``` 
-  * In the above code the networkservice is making the network call and the response that it gives we transform into `User` object in `UserRepository`
-   as we only handle data in repository layer not the error or response codes.
+* This project helps you understand creating containers classes for your data to be loaded such as
+   * home fragment
+   * photo fragment
+   * profile fragment
+* We create a `MainActivity` which keeps replacing the fragments such as photo, home, profile based on what is been selected 
+  at the bottom navigation bar. 
+* `MainActivity` only sends the information of which option was clicked to `MainViewmodel` based on `bottomNavigation`
+* In the `MainViewmodel` we use the `LiveData` for each option of `bottomNavigation` and we observe them in `MainActivity`
+* From `MainActivity` we change the fragment updated by `LiveData`, we also check if current fragment is option that the user clicked 
+  then we retain the same fragment.
+* To avoid the recreation of fragment on multiple clicks by user we retain the instance of fragment when its loaded for first time
+   and displayed the same.
