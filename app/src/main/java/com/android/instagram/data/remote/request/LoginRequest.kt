@@ -1,4 +1,4 @@
-package com.android.instagram.data.model
+package com.android.instagram.data.remote.request
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
