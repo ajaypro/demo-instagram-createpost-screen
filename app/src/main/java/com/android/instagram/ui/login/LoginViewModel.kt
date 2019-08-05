@@ -25,7 +25,7 @@ class LoginViewModel(
     private val validationList: MutableLiveData<List<Validation>> = MutableLiveData()
 
     // dummyvalidation for controlling navigation
-    val launchDummy: MutableLiveData<Event<Map<String, String>>> = MutableLiveData()
+    val launchMain: MutableLiveData<Event<Map<String, String>>> = MutableLiveData()
 
     // below 5 mutablelivedat to control UI
     val emailField: MutableLiveData<String> = MutableLiveData()
@@ -73,7 +73,7 @@ class LoginViewModel(
                         .subscribe({
                             userRepository.saveCurrentUser(it)
                             loggingIn.postValue(false)
-                            launchDummy.postValue(Event(emptyMap()))
+                            launchMain.postValue(Event(emptyMap()))
 
                         },
                             {

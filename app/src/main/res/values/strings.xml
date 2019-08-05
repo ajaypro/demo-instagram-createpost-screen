@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Login Base Classes</string>
+    <string name="app_name">PostCreate</string>
 
     <string name="network_connection_error">Internet connection lost, please retry again</string>
     <string name="network_default_error">Something wrong happened, please retry again</string>
@@ -18,4 +18,17 @@
     <string name="password_blank">password is blank</string>
     <string name="password_wrong">password is wrong</string>
     <string name="password_success">Password entered is correct</string>
+
+    <!--menu-->
+    <string name="menu_home">Home</string>
+    <string name="menu_add_photos">Add Photos</string>
+    <string name="menu_profile">Profile</string>
+    <string name="post_likes">%1d Likes</string>
+    <string name="camera">Camera</string>
+    <string name="gallery">gallery</string>
+
+    <!--error message-->
+
+    <string name ="try_again">try again</string>
+
 </resources>

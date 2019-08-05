@@ -11,12 +11,15 @@ import com.android.instagram.data.local.prefs.UserPreferences
 import com.android.instagram.data.remote.NetworkService
 import com.android.instagram.data.remote.Networking
 import com.android.instagram.di.ApplicationContext
+import com.android.instagram.di.TempDirectory
+import com.android.instagram.utils.common.FileUtils
 import com.android.instagram.utils.network.NetworkHelper
 import com.android.instagram.utils.rx.RxSchedulerProvider
 import com.android.instagram.utils.rx.SchedulerProvider
 import dagger.Module
 import dagger.Provides
 import io.reactivex.disposables.CompositeDisposable
+import java.io.File
 import javax.inject.Singleton
 
 @Module
@@ -71,6 +74,15 @@ class ApplicationModule(private val application: InstagramApplication) {
     @Singleton
     @Provides
     fun provideNetworkHelper(): NetworkHelper = NetworkHelper(application)
+
+    /**
+     * adding this qualifier as file is generic so in future when we want to create file we will have separate
+     * qualifier to easily identify
+     */
+    @Singleton
+    @Provides
+    @TempDirectory
+    fun provideTempDirectory(): File = FileUtils.getDirectory(application, "temp")
 
 
 }

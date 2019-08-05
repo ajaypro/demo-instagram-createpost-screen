@@ -2,9 +2,9 @@ package com.android.instagram.data.repository
 
 import com.android.instagram.data.local.db.DatabaseService
 import com.android.instagram.data.local.prefs.UserPreferences
-import com.android.instagram.data.model.LoginRequest
 import com.android.instagram.data.model.User
 import com.android.instagram.data.remote.NetworkService
+import com.android.instagram.data.remote.request.LoginRequest
 import io.reactivex.Single
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -54,6 +54,10 @@ class UserRepository @Inject constructor(
                     it.profilePicUrl
                 )
             }
+
+
+
 }
+
 
 

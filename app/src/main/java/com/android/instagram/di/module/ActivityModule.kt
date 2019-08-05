@@ -7,6 +7,8 @@ import com.android.instagram.data.repository.UserRepository
 import com.android.instagram.ui.base.BaseActivity
 import com.android.instagram.ui.dummy.DummyViewModel
 import com.android.instagram.ui.login.LoginViewModel
+import com.android.instagram.ui.main.MainSharedViewModel
+import com.android.instagram.ui.main.MainViewModel
 import com.android.instagram.ui.splash.SplashViewModel
 import com.android.instagram.utils.ViewModelProviderFactory
 import com.android.instagram.utils.network.NetworkHelper
@@ -14,6 +16,7 @@ import com.android.instagram.utils.rx.SchedulerProvider
 import dagger.Module
 import dagger.Provides
 import io.reactivex.disposables.CompositeDisposable
+import java.io.File
 
 /**
  * Kotlin Generics Reference: https://kotlinlang.org/docs/reference/generics.html
@@ -60,5 +63,25 @@ class ActivityModule(private val activity: BaseActivity<*>) {
 
         LoginViewModel(schedulerProvider, compositeDisposable, networkHelper, userRepository)
     }).get(LoginViewModel::class.java)
+
+
+    @Provides
+    fun provideMainViewModel(
+        schedulerProvider: SchedulerProvider,
+        compositeDisposable: CompositeDisposable,
+        networkHelper: NetworkHelper
+    ): MainViewModel = ViewModelProviders.of(activity, ViewModelProviderFactory(MainViewModel::class) {
+
+        MainViewModel(schedulerProvider, compositeDisposable, networkHelper)
+    }).get(MainViewModel::class.java)
+
+    @Provides
+    fun provideMainSharedViewModel(schedulerProvider: SchedulerProvider,
+                                   compositeDisposable: CompositeDisposable,
+                                   networkHelper: NetworkHelper
+    ): MainSharedViewModel
+            = ViewModelProviders.of(activity,ViewModelProviderFactory(MainSharedViewModel::class) {
+        MainSharedViewModel(schedulerProvider, compositeDisposable, networkHelper)
+    }).get(MainSharedViewModel::class.java)
 
 }

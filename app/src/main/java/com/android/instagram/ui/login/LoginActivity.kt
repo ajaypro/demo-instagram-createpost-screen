@@ -10,6 +10,7 @@ import com.android.instagram.R
 import com.android.instagram.di.component.ActivityComponent
 import com.android.instagram.ui.base.BaseActivity
 import com.android.instagram.ui.dummy.DummyActivity
+import com.android.instagram.ui.main.MainActivity
 import com.android.instagram.utils.common.Status
 import kotlinx.android.synthetic.main.activity_login.*
 import javax.inject.Inject
@@ -61,9 +62,9 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
     override fun setupObservers() {
         super.setupObservers()
 
-        loginViewModel.launchDummy.observe(this, Observer {
+        loginViewModel.launchMain.observe(this, Observer {
             it.getIfNotHandled()?.run {
-                startActivity(Intent(applicationContext, DummyActivity::class.java))
+                startActivity(Intent(applicationContext, MainActivity::class.java))
                 finish()
             }
         })

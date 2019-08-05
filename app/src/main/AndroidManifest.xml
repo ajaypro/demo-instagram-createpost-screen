@@ -23,6 +23,7 @@
 
         <activity android:name="com.android.instagram.ui.dummy.DummyActivity"/>
         <activity android:name="com.android.instagram.ui.login.LoginActivity"/>
+        <activity android:name=".ui.main.MainActivity"/>
     </application>
 
 </manifest>

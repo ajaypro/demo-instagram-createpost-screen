@@ -8,23 +8,17 @@ import com.google.gson.annotations.SerializedName
  * Created by Ajay Deepak on 13-07-2019.
  */
 
-data class PostResponse(
+data class PostListResponse(
 
     @Expose
     @SerializedName("statusCode")
-    val statusCode: String,
-
-    @Expose
-    @SerializedName("status")
-    val status: Int,
+    var statusCode: String,
 
     @Expose
     @SerializedName("message")
-    val message: String,
+    var message: String,
 
     @Expose
     @SerializedName("data")
-    val data: Post
-
-    ) {
-}
+    val data: List<Post>
+    )

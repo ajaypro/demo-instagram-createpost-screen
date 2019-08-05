@@ -5,6 +5,7 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.android.instagram.data.model.Post
 
 abstract class BaseAdapter<T : Any, VH : BaseItemViewHolder<T, out BaseItemViewModel<T>>>(
     parentLifecycle: Lifecycle,
@@ -93,5 +94,11 @@ abstract class BaseAdapter<T : Any, VH : BaseItemViewHolder<T, out BaseItemViewM
             notifyDataSetChanged()
         else if (oldCount > 0 && currentCount > oldCount)
             notifyItemRangeChanged(oldCount - 1, currentCount - oldCount)
+    }
+    
+    fun updateList(list: List<T>){
+        dataList.clear()
+        dataList.addAll(list)
+        notifyDataSetChanged()
     }
 }
