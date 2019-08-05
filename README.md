@@ -1,42 +1,71 @@
-# Creating a Home screen containing list of posts 
-  
-  ### requirements 
-  
-  * Appbar containing logo/app name 
-  * User pic and user name
-  * recent post
-  * time of post
-  * no of likes for the post if user is logged in.
-  
-  
-  ### Approach
-  
-  ### Base setup
-  
-  * Initally we create containers that will have fragments and navigation as well
-  * Creating placeholders that will heave a ui and viewmodel main, home, photo, profile
-  * Lazy loading of fragments that is loading the fragments from saved so that new instance of fragment is not loaded each time
-    e.g if i click profile -> profile fragment will be loaded and it will be saved in mainactivity so that next time when it clicked new instance 
-	is not created. 
-  * mainactivity -> tell mainviewmodel what is selected on bottom navigation and viewmodel will decide which fragment to be loaded. 
-  * Create livedata in viewmodel that keeps track of the navigation of fragments from viewmodel which is later been observed by mainactivity
-  
-  ### Functionality building
-  
-  * First api to list the posts
-  * Call to like api and unlike api
-  * First we need to work on 
-			data layer 
-			  * Create post model
-			  * create inner user class in post model, this is different user class that is associated with post data as the info is different 
-			    from actual User model, so we have created a separate inner class for User
-			Business logic layer 
-			UI layer
-  * Now to make the first feature display posts in the home fragment 
-  * we need 
-      * Home Fragment -> will host the recyclerview, set the posts list obtained from posts livedata from viewmodel into the adapter
-	  * HomeViewModel -> will have live data to show data loading and list of posts and paginator to load more data when user scrolls down 
-	  * PostAdapter -> will have list of posts
-  * Now we need to display the post in the ui and also make api call for like and dislike on the post. 
-  * We will also load image for image post using glide and the url that we use in glide should be authenticated
-  
+## Create photo post
+ 
+ * why are we saving the inputfile from gallery 
+ * why getimagesize 
+ * why using new list after refreshing
+ 
+ ### upload photo and create post
+ 
+ ### Upload image
+ 
+   * When add photo is clicked it will go to photofragment which will have options like camera and gallery to fetch image.
+   * Camera
+     * In `onActivityResult` when we receive requestcode for camera, we pass it to viewmodel to handle it by calling `onCameraImageTaken`
+	    which takes a lambda of camera's bitmap path 
+	 * In function `onCameraImageTaken`, since we are fetching the image path we fetch it form background thread using `Single.fromCallable{}`
+	  
+	  ```
+	  Single.fromCallable { camerImageProcessor() }
+                .subscribeOn(schedulerProvider.io())
+                .subscribe({
+                    File(it).apply {
+                        FileUtils.getImageSize(this)
+                    }
+                }
+	  ```
+	  * and the result of is a file using which we get the imageSize
+	  
+	### Gallery 
+	
+	  * In `onActivityResult` when we receive requestcode for gallery, we pass it to viewmodel to handle it by calling `onGalleryImageSelected`
+	    which takes `inputstream` as argument, here we are compressing, decoding using bitmapfactory and converting the image as required size
+		which returns a file of the image
+		
+		```
+		Single.fromCallable {
+                FileUtils.saveInputStreamToFile(inputStream, directory, "sample-img", 500)
+            }.subscribeOn(schedulerProvider.io())
+                .subscribe({
+                    if (it != null) {
+                        FileUtils.getImageSize(it)?.let { size ->
+                            uploadAndCreatePost(it, size)
+                        }
+                    } else {
+                        loading.postValue(false) // progressbar loading
+                        messageStringId.postValue(Resource.error(R.string.try_again))
+                    }
+		
+		```
+ * create post 
+ * Navigating between fragments through activity and also after uploading the post it needs to show `homefragment` with a list of recent posts
+ * To achieve this I created a SharedViewmodel which will be used across `homefragment` `photofragment` and `mainactivity`
+  ```
+ 
+    MainSharedViewModel 
+	
+	 val homeRedirection: MutableLiveData<Boolean> = MutableLiveData()
+    val newPost: MutableLiveData<Event<Post>> = MutableLiveData()
+
+    fun onHomeRedirect() {
+         homeRedirection.postValue(true)
+    }
+	
+	```
+  * Here we have livedata for redirectiong to `homefragment` and also newpost which will be observed in `photofragment` by `posts` livedata of 
+     `photoViewModel`'s that will display it in the fragment. 
+  * Now we redirect to `mainactivity` after creating the new post, which actually should host `homefragment` with latest posts
+  * In the `mainactivity` we do manual redirect of of clicking the `homefragment` option  so that it displays `homefragment`
+    * To display recent posts with newpost at the top of list in the `homefragment` we do two things 
+	  update the base adapter with new list by clearing the old list( will try diff util and update as well) and the `homefragment` will 
+	  call the `onNewPost()` from `homeviewmodel` which is observed by livedata of `sharedviewmodel`
+	* In the `onNewPost()` we will update the postlist with new post at 0th index so it will the first post and refresh the postlist 
